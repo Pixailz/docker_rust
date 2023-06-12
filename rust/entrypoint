@@ -1,0 +1,23 @@
+#!/bin/ash
+
+# CONFIG
+# set -x
+
+PATH="${CARGO_HOME}/bin:${PATH}"
+
+# FUNCTION
+
+if [ ! -d "${RUSTUP_HOME}" ]; then
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+fi
+
+rustup default stable
+rustup update
+
+# MAIN
+
+if [ ${#} != "0" ]; then
+	exec ${@}
+else
+	ash
+fi

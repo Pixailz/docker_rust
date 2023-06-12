@@ -1,0 +1,74 @@
+version: "3.9"
+
+################################################################################
+# DEFAULT CONF https://stackoverflow.com/a/65522511
+
+x-healthcheck_conf: &healthcheck_conf
+      interval: 1s
+      timeout: 1s
+      retries: 50
+
+################################################################################
+
+services:
+  ##############################################################################
+  # MAIN
+  rust:
+    container_name: rust
+    build:
+      dockerfile: "./rust_web/Dockerfile"
+      target: "packed"
+    environment:
+      - RUSTUP_HOME=/Shared/rust/.rustup
+      - CARGO_HOME=/Shared/rust/.cargo
+    networks:
+      main_net:
+        ipv4_address: "13.37.42.10"
+    volumes:
+      - rust_base:/Shared/rust
+      - rust_srcs:/Shared/srcs
+    # healthcheck:
+    #   test: [ "CMD", "pgwrep", "mysqld" ]
+    #   << : *healthcheck_conf
+  #
+  ##############################################################################
+
+networks:
+  ##############################################################################
+  # MAIN INTERNAL NETWORK
+  main_net:
+    name: main_net
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: main_net
+    ipam:
+      driver: default
+      config:
+        - subnet: 13.37.42.0/27
+          ip_range: 13.37.42.0/27
+          gateway: 13.37.42.1
+  #
+  ##############################################################################
+
+volumes:
+  ##############################################################################
+  # root of site
+  rust_base:
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: ./Shared/rust
+  #
+  ##############################################################################
+
+  ##############################################################################
+  # root of site
+  rust_srcs:
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: ./Shared/srcs
+  #
+  ##############################################################################
