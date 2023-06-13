@@ -6,15 +6,15 @@
 PATH="${CARGO_HOME}/bin:${PATH}"
 
 # FUNCTION
-
 if [ ! -d "${RUSTUP_HOME}" ]; then
 	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 fi
 
+# MAIN
 rustup default stable
 rustup update
 
-# MAIN
+chown -R ${U_UID}:${G_UID} /Shared/srcs/
 
 if [ ${#} != "0" ]; then
 	exec ${@}

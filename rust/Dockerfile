@@ -11,7 +11,9 @@ RUN			apk add --upgrade --progress --virtual base \
 
 FROM		base			as packed
 
+COPY		--chown=${USER}:${USER} ./src /Shared/srcs/
+COPY		--chown=root:root ./entrypoint /run/entrypoint
+
 WORKDIR		/Shared/srcs/
-COPY		--chown=root:root ./src ./
-COPY		--chown=root:root ./rust_web/entrypoint /run/entrypoint
+
 ENTRYPOINT	[ "/run/entrypoint" ]

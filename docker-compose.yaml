@@ -16,11 +16,13 @@ services:
   rust:
     container_name: rust
     build:
-      dockerfile: "./rust_web/Dockerfile"
+      context: "rust"
       target: "packed"
     environment:
       - RUSTUP_HOME=/Shared/rust/.rustup
       - CARGO_HOME=/Shared/rust/.cargo
+      - U_UID=${U_UID}
+      - G_UID=${G_UID}
     networks:
       main_net:
         ipv4_address: "13.37.42.10"
